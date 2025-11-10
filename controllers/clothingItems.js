@@ -8,8 +8,6 @@ const createItem = (req, res) => {
       console.error(err);
       if (err.name === "ValidationError") {
         return res.status(400).send({ message: err.message });
-      } else {
-        return res.status(500).send({ message: err.message });
       }
     });
 };
@@ -34,11 +32,8 @@ const updateItem = (req, res) => {
       console.error(err);
       if (err.name === "DocumentNotFoundError") {
         return res.status(404).send({ message: err.message });
-      } else if (err.name === "CastError") {
-        return res.status(400).send({ message: err.message });
-      } else {
-        return res.status(500).send({ message: err.message });
-      }
+      } else err.name === "CastError";
+      return res.status(400).send({ message: err.message });
     });
 };
 
@@ -51,9 +46,8 @@ const deleteItem = (req, res) => {
       console.error(err);
       if (err.name === "DocumentNotFoundError") {
         return res.status(404).send({ message: err.message });
-      } else {
-        return res.status(400).send({ message: err.message });
-      }
+      } else err.name === "CastError";
+      return res.status(400).send({ message: err.message });
     });
 };
 
@@ -67,13 +61,10 @@ const likeItem = (req, res) =>
     .then((item) => res.status(201).send(item))
     .catch((err) => {
       console.error(err);
-      if (err.name === "CastError") {
+      if (err.name === "DocumentNotFoundError") {
         return res.status(404).send({ message: err.message });
-      } else if (err.name === "DocumentNotFoundError") {
-        return res.status(400).send({ message: err.message });
-      } else {
-        return res.status(500).send({ message: err.message });
-      }
+      } else err.name === "CastError";
+      return res.status(400).send({ message: err.message });
     });
 
 const dislikeItem = (req, res) =>
@@ -88,11 +79,8 @@ const dislikeItem = (req, res) =>
       console.error(err);
       if (err.name === "DocumentNotFoundError") {
         return res.status(404).send({ message: err.message });
-      } else if (err.name === "CastError") {
-        return res.status(400).send({ message: err.message });
-      } else {
-        return res.status(500).send({ message: err.message });
-      }
+      } else err.name === "CastError";
+      return res.status(400).send({ message: err.message });
     });
 
 module.exports = {
