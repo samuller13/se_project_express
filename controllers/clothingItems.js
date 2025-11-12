@@ -29,7 +29,7 @@ const getItems = (req, res) => {
       } else if (err.name === "CastError") {
         res.status(BAD_REQUEST_ERROR_CODE).send({ message: "Invalid item ID" });
       } else {
-        return res.status(SERVER_ERROR_CODE).send({ message: err.message });
+        res.status(SERVER_ERROR_CODE).send({ message: err.message });
       }
     });
 };
@@ -59,9 +59,7 @@ const deleteItem = (req, res) => {
     .orFail()
     .then((item) => {
       if (!item) {
-        return res
-          .status(NOT_FOUND_ERROR_CODE)
-          .send({ message: "Item not found" });
+        res.status(NOT_FOUND_ERROR_CODE).send({ message: "Item not found" });
       }
       res.status(200).send({});
     })
