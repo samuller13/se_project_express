@@ -1,4 +1,3 @@
-const mongoose = require("mongoose");
 const ClothingItem = require("../models/clothingItem");
 const {
   BAD_REQUEST_ERROR_CODE,
@@ -49,7 +48,7 @@ const updateItem = (req, res) => {
       } else if (err.name === "CastError") {
         res.status(BAD_REQUEST_ERROR_CODE).send({ message: "Invalid item ID" });
       } else {
-        return res.status(SERVER_ERROR_CODE).send({ message: err.message });
+        res.status(SERVER_ERROR_CODE).send({ message: err.message });
       }
     });
 };
@@ -74,12 +73,12 @@ const deleteItem = (req, res) => {
       } else if (err.name === "DocumentNotFoundError") {
         res.status(NOT_FOUND_ERROR_CODE).send({ message: "Item not found" });
       } else {
-        return res.status(SERVER_ERROR_CODE).send({ message: err.message });
+        res.status(SERVER_ERROR_CODE).send({ message: err.message });
       }
     });
 };
 
-const likeItem = (req, res) =>
+const likeItem = (req, res) => {
   ClothingItem.findByIdAndUpdate(
     req.params.itemId,
     { $addToSet: { likes: req.user._id } },
@@ -94,11 +93,12 @@ const likeItem = (req, res) =>
       } else if (err.name === "DocumentNotFoundError") {
         res.status(NOT_FOUND_ERROR_CODE).send({ message: "Item not found" });
       } else {
-        return res.status(SERVER_ERROR_CODE).send({ message: err.message });
+        res.status(SERVER_ERROR_CODE).send({ message: err.message });
       }
     });
+};
 
-const dislikeItem = (req, res) =>
+const dislikeItem = (req, res) => {
   ClothingItem.findByIdAndUpdate(
     req.params.itemId,
     { $pull: { likes: req.user._id } },
@@ -113,9 +113,10 @@ const dislikeItem = (req, res) =>
       } else if (err.name === "DocumentNotFoundError") {
         res.status(NOT_FOUND_ERROR_CODE).send({ message: "Item not found" });
       } else {
-        return res.status(SERVER_ERROR_CODE).send({ message: err.message });
+        res.status(SERVER_ERROR_CODE).send({ message: err.message });
       }
     });
+};
 
 module.exports = {
   createItem,

@@ -40,7 +40,7 @@ const getUser = (req, res) => {
       } else if (err.name === "CastError") {
         res.status(BAD_REQUEST_ERROR_CODE).send({ message: "Invalid user ID" });
       } else {
-        return res.status(SERVER_ERROR_CODE).send({ message: err.message });
+        res.status(SERVER_ERROR_CODE).send({ message: err.message });
       }
     });
 };
