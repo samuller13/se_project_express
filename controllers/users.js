@@ -1,11 +1,16 @@
 const User = require("../models/user");
+const {
+  BAD_REQUEST_ERROR_CODE,
+  NOT_FOUND_ERROR_CODE,
+  SERVER_ERROR_CODE,
+} = require("../utils/errors");
 
 const getUsers = (req, res) => {
   User.find({})
-    .then((users) => res.status(200).send(users))
+    .then((user) => res.status(200).send(user))
     .catch((err) => {
       console.error(err);
-      return res.status(500).send({ message: err.message });
+      res.status(SERVER_ERROR_CODE).send({ message: err.message });
     });
 };
 
@@ -16,7 +21,9 @@ const createUser = (req, res) => {
     .catch((err) => {
       console.error(err);
       if (err.name === "ValidationError") {
-        return res.status(400).send({ message: err.message });
+        res.status(BAD_REQUEST_ERROR_CODE).send({ message: err.message });
+      } else {
+        res.status(SERVER_ERROR_CODE).send({ message: err.message });
       }
     });
 };
@@ -25,13 +32,16 @@ const getUser = (req, res) => {
   const { userId } = req.params;
   User.findById(userId)
     .orFail()
-    .then((users) => res.status(200).send(users))
+    .then((user) => res.status(200).send(user))
     .catch((err) => {
       console.error(err);
       if (err.name === "DocumentNotFoundError") {
-        return res.status(404).send({ message: err.message });
-      } else err.name === "CastError";
-      return res.status(400).send({ message: err.message });
+        res.status(NOT_FOUND_ERROR_CODE).send({ message: "User not found" });
+      } else if (err.name === "CastError") {
+        res.status(BAD_REQUEST_ERROR_CODE).send({ message: "Invalid user ID" });
+      } else {
+        return res.status(SERVER_ERROR_CODE).send({ message: err.message });
+      }
     });
 };
 

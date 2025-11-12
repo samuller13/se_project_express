@@ -1,4 +1,10 @@
+const mongoose = require("mongoose");
 const ClothingItem = require("../models/clothingItem");
+const {
+  BAD_REQUEST_ERROR_CODE,
+  NOT_FOUND_ERROR_CODE,
+  SERVER_ERROR_CODE,
+} = require("../utils/errors");
 
 const createItem = (req, res) => {
   const { name, weather, imageUrl } = req.body;
@@ -7,7 +13,9 @@ const createItem = (req, res) => {
     .catch((err) => {
       console.error(err);
       if (err.name === "ValidationError") {
-        return res.status(400).send({ message: err.message });
+        res.status(BAD_REQUEST_ERROR_CODE).send({ message: err.message });
+      } else {
+        res.status(SERVER_ERROR_CODE).send({ message: err.message });
       }
     });
 };
@@ -17,7 +25,13 @@ const getItems = (req, res) => {
     .then((items) => res.status(200).send(items))
     .catch((err) => {
       console.error(err);
-      return res.status(500).send({ message: err.message });
+      if (err.name === "DocumentNotFoundError") {
+        res.status(NOT_FOUND_ERROR_CODE).send({ message: "Item not found" });
+      } else if (err.name === "CastError") {
+        res.status(BAD_REQUEST_ERROR_CODE).send({ message: "Invalid item ID" });
+      } else {
+        return res.status(SERVER_ERROR_CODE).send({ message: err.message });
+      }
     });
 };
 
@@ -31,9 +45,12 @@ const updateItem = (req, res) => {
     .catch((err) => {
       console.error(err);
       if (err.name === "DocumentNotFoundError") {
-        return res.status(404).send({ message: err.message });
-      } else err.name === "CastError";
-      return res.status(400).send({ message: err.message });
+        res.status(NOT_FOUND_ERROR_CODE).send({ message: "Item not found" });
+      } else if (err.name === "CastError") {
+        res.status(BAD_REQUEST_ERROR_CODE).send({ message: "Invalid item ID" });
+      } else {
+        return res.status(SERVER_ERROR_CODE).send({ message: err.message });
+      }
     });
 };
 
@@ -41,13 +58,24 @@ const deleteItem = (req, res) => {
   const { itemId } = req.params;
   ClothingItem.findByIdAndDelete(itemId)
     .orFail()
-    .then((item) => res.status(200).send({}))
+    .then((item) => {
+      if (!item) {
+        return res
+          .status(NOT_FOUND_ERROR_CODE)
+          .send({ message: "Item not found" });
+      }
+      res.status(200).send({});
+    })
+
     .catch((err) => {
       console.error(err);
-      if (err.name === "DocumentNotFoundError") {
-        return res.status(404).send({ message: err.message });
-      } else err.name === "CastError";
-      return res.status(400).send({ message: err.message });
+      if (err.name === "CastError") {
+        res.status(BAD_REQUEST_ERROR_CODE).send({ message: "Invalid item ID" });
+      } else if (err.name === "DocumentNotFoundError") {
+        res.status(NOT_FOUND_ERROR_CODE).send({ message: "Item not found" });
+      } else {
+        return res.status(SERVER_ERROR_CODE).send({ message: err.message });
+      }
     });
 };
 
@@ -61,10 +89,13 @@ const likeItem = (req, res) =>
     .then((item) => res.status(201).send(item))
     .catch((err) => {
       console.error(err);
-      if (err.name === "DocumentNotFoundError") {
-        return res.status(404).send({ message: err.message });
-      } else err.name === "CastError";
-      return res.status(400).send({ message: err.message });
+      if (err.name === "CastError") {
+        res.status(BAD_REQUEST_ERROR_CODE).send({ message: "Invalid item ID" });
+      } else if (err.name === "DocumentNotFoundError") {
+        res.status(NOT_FOUND_ERROR_CODE).send({ message: "Item not found" });
+      } else {
+        return res.status(SERVER_ERROR_CODE).send({ message: err.message });
+      }
     });
 
 const dislikeItem = (req, res) =>
@@ -77,10 +108,13 @@ const dislikeItem = (req, res) =>
     .then((item) => res.status(200).send(item))
     .catch((err) => {
       console.error(err);
-      if (err.name === "DocumentNotFoundError") {
-        return res.status(404).send({ message: err.message });
-      } else err.name === "CastError";
-      return res.status(400).send({ message: err.message });
+      if (err.name === "CastError") {
+        res.status(BAD_REQUEST_ERROR_CODE).send({ message: "Invalid item ID" });
+      } else if (err.name === "DocumentNotFoundError") {
+        res.status(NOT_FOUND_ERROR_CODE).send({ message: "Item not found" });
+      } else {
+        return res.status(SERVER_ERROR_CODE).send({ message: err.message });
+      }
     });
 
 module.exports = {
