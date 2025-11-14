@@ -12,9 +12,11 @@ const createItem = (req, res) => {
     .catch((err) => {
       console.error(err);
       if (err.name === "ValidationError") {
-        res.status(BAD_REQUEST_ERROR_CODE).send({ message: err.message });
+        res.status(BAD_REQUEST_ERROR_CODE).send({ message: "Invalid item ID" });
       } else {
-        res.status(SERVER_ERROR_CODE).send({ message: err.message });
+        res
+          .status(SERVER_ERROR_CODE)
+          .send({ message: "An error has occurred on the server." });
       }
     });
 };
@@ -29,7 +31,9 @@ const getItems = (req, res) => {
       } else if (err.name === "CastError") {
         res.status(BAD_REQUEST_ERROR_CODE).send({ message: "Invalid item ID" });
       } else {
-        res.status(SERVER_ERROR_CODE).send({ message: err.message });
+        res
+          .status(SERVER_ERROR_CODE)
+          .send({ message: "An error has occurred on the server." });
       }
     });
 };
@@ -48,7 +52,9 @@ const updateItem = (req, res) => {
       } else if (err.name === "CastError") {
         res.status(BAD_REQUEST_ERROR_CODE).send({ message: "Invalid item ID" });
       } else {
-        res.status(SERVER_ERROR_CODE).send({ message: err.message });
+        res
+          .status(SERVER_ERROR_CODE)
+          .send({ message: "An error has occurred on the server." });
       }
     });
 };
@@ -58,10 +64,7 @@ const deleteItem = (req, res) => {
   ClothingItem.findByIdAndDelete(itemId)
     .orFail()
     .then((item) => {
-      if (!item) {
-        res.status(NOT_FOUND_ERROR_CODE).send({ message: "Item not found" });
-      }
-      res.status(200).send({});
+      res.status(200).send({ data: item });
     })
 
     .catch((err) => {
@@ -71,7 +74,9 @@ const deleteItem = (req, res) => {
       } else if (err.name === "DocumentNotFoundError") {
         res.status(NOT_FOUND_ERROR_CODE).send({ message: "Item not found" });
       } else {
-        res.status(SERVER_ERROR_CODE).send({ message: err.message });
+        res
+          .status(SERVER_ERROR_CODE)
+          .send({ message: "An error has occurred on the server." });
       }
     });
 };
@@ -91,7 +96,9 @@ const likeItem = (req, res) => {
       } else if (err.name === "DocumentNotFoundError") {
         res.status(NOT_FOUND_ERROR_CODE).send({ message: "Item not found" });
       } else {
-        res.status(SERVER_ERROR_CODE).send({ message: err.message });
+        res
+          .status(SERVER_ERROR_CODE)
+          .send({ message: "An error has occurred on the server." });
       }
     });
 };
@@ -111,7 +118,9 @@ const dislikeItem = (req, res) => {
       } else if (err.name === "DocumentNotFoundError") {
         res.status(NOT_FOUND_ERROR_CODE).send({ message: "Item not found" });
       } else {
-        res.status(SERVER_ERROR_CODE).send({ message: err.message });
+        res
+          .status(SERVER_ERROR_CODE)
+          .send({ message: "An error has occurred on the server." });
       }
     });
 };
