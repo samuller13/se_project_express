@@ -3,6 +3,7 @@ const {
   BAD_REQUEST_ERROR_CODE,
   NOT_FOUND_ERROR_CODE,
   SERVER_ERROR_CODE,
+  FORBIDDEN_ERROR_CODE,
 } = require("../utils/errors");
 
 const createItem = (req, res) => {
@@ -39,11 +40,24 @@ const getItems = (req, res) => {
 };
 
 const deleteItem = (req, res) => {
-  const { itemId } = req.params;
-  ClothingItem.findByIdAndDelete(itemId)
+  const { id } = req.params;
+  ClothingItem.findById(id)
     .orFail()
     .then((item) => {
-      res.status(200).send({ data: item });
+      if (!item.owner) {
+        return res
+          .status(BAD_REQUEST_ERROR_CODE)
+          .send({ message: "Item has no owner information" });
+      }
+      if (item.owner.toString() !== req.user._id.toString()) {
+        return res
+          .status(FORBIDDEN_ERROR_CODE)
+          .send({ message: "Access denied" });
+      }
+      return ClothingItem.findByIdAndDelete(id);
+    })
+    .then((deletedItem) => {
+      res.status(200).send({ message: "Item deleted successfully" });
     })
 
     .catch((err) => {
@@ -62,7 +76,7 @@ const deleteItem = (req, res) => {
 
 const likeItem = (req, res) => {
   ClothingItem.findByIdAndUpdate(
-    req.params.itemId,
+    req.params.id,
     { $addToSet: { likes: req.user._id } },
     { new: true }
   )
@@ -84,7 +98,7 @@ const likeItem = (req, res) => {
 
 const dislikeItem = (req, res) => {
   ClothingItem.findByIdAndUpdate(
-    req.params.itemId,
+    req.params.id,
     { $pull: { likes: req.user._id } },
     { new: true }
   )
