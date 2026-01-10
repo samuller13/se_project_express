@@ -11,7 +11,6 @@ const createItem = (req, res) => {
   ClothingItem.create({ name, weather, imageUrl, owner: req.user._id })
     .then((item) => res.status(201).send(item))
     .catch((err) => {
-      console.error(err);
       if (err.name === "ValidationError") {
         res.status(BAD_REQUEST_ERROR_CODE).send({ message: "Invalid item ID" });
       } else {
@@ -26,7 +25,6 @@ const getItems = (req, res) => {
   ClothingItem.find({})
     .then((items) => res.status(200).send(items))
     .catch((err) => {
-      console.error(err);
       if (err.name === "DocumentNotFoundError") {
         res.status(NOT_FOUND_ERROR_CODE).send({ message: "Item not found" });
       } else if (err.name === "CastError") {
@@ -56,12 +54,11 @@ const deleteItem = (req, res) => {
       }
       return ClothingItem.findByIdAndDelete(id);
     })
-    .then((deletedItem) => {
+    .then(() => {
       res.status(200).send({ message: "Item deleted successfully" });
     })
 
     .catch((err) => {
-      console.error(err);
       if (err.name === "CastError") {
         res.status(BAD_REQUEST_ERROR_CODE).send({ message: "Invalid item ID" });
       } else if (err.name === "DocumentNotFoundError") {
@@ -83,7 +80,6 @@ const likeItem = (req, res) => {
     .orFail()
     .then((item) => res.status(201).send(item))
     .catch((err) => {
-      console.error(err);
       if (err.name === "CastError") {
         res.status(BAD_REQUEST_ERROR_CODE).send({ message: "Invalid item ID" });
       } else if (err.name === "DocumentNotFoundError") {
@@ -105,7 +101,6 @@ const dislikeItem = (req, res) => {
     .orFail()
     .then((item) => res.status(200).send(item))
     .catch((err) => {
-      console.error(err);
       if (err.name === "CastError") {
         res.status(BAD_REQUEST_ERROR_CODE).send({ message: "Invalid item ID" });
       } else if (err.name === "DocumentNotFoundError") {

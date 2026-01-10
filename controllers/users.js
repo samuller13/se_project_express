@@ -15,8 +15,7 @@ const getUsers = (req, res) => {
   User.find({})
     .then((user) => res.status(200).send(user))
     .catch((err) => {
-      console.error(err);
-      res
+      return res
         .status(SERVER_ERROR_CODE)
         .send({ message: "An error has occurred on the server." });
     });
@@ -40,13 +39,12 @@ const createUser = (req, res) => {
       });
     })
 
-    .then((user) => {
+    .then(function (user) {
       const userObj = user.toObject();
       delete userObj.password;
       return res.status(201).send(userObj);
     })
     .catch((err) => {
-      console.error(err);
       if (err.code === 11000) {
         res
           .status(CONFLICT_ERROR_CODE)
@@ -67,7 +65,6 @@ const getCurrentUser = (req, res) => {
     .orFail()
     .then((user) => res.status(200).send(user))
     .catch((err) => {
-      console.error(err);
       if (err.name === "DocumentNotFoundError") {
         res.status(NOT_FOUND_ERROR_CODE).send({ message: "User not found" });
       } else if (err.name === "CastError") {
@@ -121,7 +118,6 @@ const updateProfile = (req, res) => {
       }
     })
     .catch((err) => {
-      console.error(err);
       if (err.name === "CastError") {
         res.status(BAD_REQUEST_ERROR_CODE).send({ message: "Invalid user ID" });
       } else {
