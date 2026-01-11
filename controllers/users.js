@@ -18,7 +18,7 @@ const createUser = (req, res) => {
       .status(BAD_REQUEST_ERROR_CODE)
       .send({ message: "Email and password are required" });
   }
-  bcrypt
+  return bcrypt
     .hash(req.body.password, 10)
     .then((hash) =>
       User.create({
@@ -39,15 +39,15 @@ const createUser = (req, res) => {
         return res
           .status(CONFLICT_ERROR_CODE)
           .send({ message: "Email already exists." });
-      } else if (err.name === "ValidationError") {
+      }
+      if (err.name === "ValidationError") {
         return res
           .status(BAD_REQUEST_ERROR_CODE)
           .send({ message: "Invalid user ID" });
-      } else {
-        return res
-          .status(SERVER_ERROR_CODE)
-          .send({ message: "An error has occurred on the server." });
       }
+      return res
+        .status(SERVER_ERROR_CODE)
+        .send({ message: "An error has occurred on the server." });
     });
 };
 
@@ -58,14 +58,18 @@ const getCurrentUser = (req, res) => {
     .then((user) => res.status(200).send(user))
     .catch((err) => {
       if (err.name === "DocumentNotFoundError") {
-        res.status(NOT_FOUND_ERROR_CODE).send({ message: "User not found" });
-      } else if (err.name === "CastError") {
-        res.status(BAD_REQUEST_ERROR_CODE).send({ message: "Invalid user ID" });
-      } else {
-        res
-          .status(SERVER_ERROR_CODE)
-          .send({ message: "An error has occurred on the server." });
+        return res
+          .status(NOT_FOUND_ERROR_CODE)
+          .send({ message: "User not found" });
       }
+      if (err.name === "CastError") {
+        return res
+          .status(BAD_REQUEST_ERROR_CODE)
+          .send({ message: "Invalid user ID" });
+      }
+      return res
+        .status(SERVER_ERROR_CODE)
+        .send({ message: "An error has occurred on the server." });
     });
 };
 
@@ -104,19 +108,21 @@ const updateProfile = (req, res) => {
   })
     .then((user) => {
       if (!user) {
-        res.status(NOT_FOUND_ERROR_CODE).send({ message: "User not found" });
-      } else {
-        res.status(200).send(user);
+        return res
+          .status(NOT_FOUND_ERROR_CODE)
+          .send({ message: "User not found" });
       }
+      return res.status(200).send(user);
     })
     .catch((err) => {
       if (err.name === "CastError") {
-        res.status(BAD_REQUEST_ERROR_CODE).send({ message: "Invalid user ID" });
-      } else {
-        res
-          .status(SERVER_ERROR_CODE)
-          .send({ message: "An error has occurred on the server." });
+        return res
+          .status(BAD_REQUEST_ERROR_CODE)
+          .send({ message: "Invalid user ID" });
       }
+      return res
+        .status(SERVER_ERROR_CODE)
+        .send({ message: "An error has occurred on the server." });
     });
 };
 
