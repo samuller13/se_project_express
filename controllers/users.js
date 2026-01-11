@@ -11,16 +11,6 @@ const {
   UNAUTHORIZED_ERROR_CODE,
 } = require("../utils/errors");
 
-const getUsers = (req, res) => {
-  User.find({})
-    .then((user) => res.status(200).send(user))
-    .catch((err) => {
-      return res
-        .status(SERVER_ERROR_CODE)
-        .send({ message: "An error has occurred on the server." });
-    });
-};
-
 const createUser = (req, res) => {
   const { email, password } = req.body;
   if (!email || !password) {
@@ -30,29 +20,31 @@ const createUser = (req, res) => {
   }
   bcrypt
     .hash(req.body.password, 10)
-    .then((hash) => {
-      return User.create({
+    .then((hash) =>
+      User.create({
         name: req.body.name,
         avatar: req.body.avatar,
         email: req.body.email,
         password: hash,
-      });
-    })
+      })
+    )
 
-    .then(function (user) {
+    .then((user) => {
       const userObj = user.toObject();
       delete userObj.password;
       return res.status(201).send(userObj);
     })
     .catch((err) => {
       if (err.code === 11000) {
-        res
+        return res
           .status(CONFLICT_ERROR_CODE)
           .send({ message: "Email already exists." });
       } else if (err.name === "ValidationError") {
-        res.status(BAD_REQUEST_ERROR_CODE).send({ message: "Invalid user ID" });
+        return res
+          .status(BAD_REQUEST_ERROR_CODE)
+          .send({ message: "Invalid user ID" });
       } else {
-        res
+        return res
           .status(SERVER_ERROR_CODE)
           .send({ message: "An error has occurred on the server." });
       }
@@ -128,4 +120,4 @@ const updateProfile = (req, res) => {
     });
 };
 
-module.exports = { getUsers, createUser, getCurrentUser, login, updateProfile };
+module.exports = { createUser, getCurrentUser, login, updateProfile };
