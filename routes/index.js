@@ -2,6 +2,7 @@ const router = require("express").Router();
 const itemRouter = require("./clothingItems");
 const userRouter = require("./users");
 const { NOT_FOUND_ERROR_CODE } = require("../utils/errors");
+const { createUser, login } = require("./controllers/users");
 
 router.post("/signin", login);
 router.post("/signup", createUser);
