@@ -19,7 +19,7 @@ app.use(express.json());
 app.post("/signin", login);
 app.post("/signup", createUser);
 
-app.use("/", auth, mainRouter);
+app.use("/", mainRouter);
 
 app.listen(PORT, () => {
   // console.log(`Listening on port ${PORT}`);

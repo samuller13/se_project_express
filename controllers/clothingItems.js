@@ -12,7 +12,9 @@ const createItem = (req, res) => {
     .then((item) => res.status(201).send(item))
     .catch((err) => {
       if (err.name === "ValidationError") {
-        res.status(BAD_REQUEST_ERROR_CODE).send({ message: "Invalid item ID" });
+        res
+          .status(BAD_REQUEST_ERROR_CODE)
+          .send({ message: "Invalid item data" });
       } else {
         res
           .status(SERVER_ERROR_CODE)
@@ -28,7 +30,9 @@ const getItems = (req, res) => {
       if (err.name === "DocumentNotFoundError") {
         res.status(NOT_FOUND_ERROR_CODE).send({ message: "Item not found" });
       } else if (err.name === "CastError") {
-        res.status(BAD_REQUEST_ERROR_CODE).send({ message: "Invalid item ID" });
+        res.status(BAD_REQUEST_ERROR_CODE).send({
+          message: "Invalid request parameters",
+        });
       } else {
         res
           .status(SERVER_ERROR_CODE)

@@ -43,7 +43,7 @@ const createUser = (req, res) => {
       if (err.name === "ValidationError") {
         return res
           .status(BAD_REQUEST_ERROR_CODE)
-          .send({ message: "Invalid user ID" });
+          .send({ message: "Invalid user data" });
       }
       return res
         .status(SERVER_ERROR_CODE)
@@ -88,7 +88,14 @@ const login = (req, res) => {
       res.send({ token });
     })
     .catch((err) => {
-      res.status(UNAUTHORIZED_ERROR_CODE).send({ message: err.message });
+      if (err.message === "Incorrect email or password") {
+        return res
+          .status(UNAUTHORIZED_ERROR_CODE)
+          .send({ message: "Incorrect email or password" });
+      }
+      return res
+        .status(SERVER_ERROR_CODE)
+        .send({ message: "An error has occurred on the server" });
     });
 };
 
@@ -115,10 +122,10 @@ const updateProfile = (req, res) => {
       return res.status(200).send(user);
     })
     .catch((err) => {
-      if (err.name === "CastError") {
+      if (err.name === "ValidationError") {
         return res
           .status(BAD_REQUEST_ERROR_CODE)
-          .send({ message: "Invalid user ID" });
+          .send({ message: "Invalid user data" });
       }
       return res
         .status(SERVER_ERROR_CODE)
