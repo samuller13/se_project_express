@@ -14,3 +14,8 @@ Node.js
 Express.js
 CRUD- Create, REad, Update, Delete
 Error Handling
+User Authorization
+
+## Project Pitch Video
+
+Check out [this video](https://drive.google.com/file/d/1PKWliUi7dAJS69g47lMsjauhj9BMM3qm/view?usp=sharing), where I describe my project and some challenges I faced while building it.
