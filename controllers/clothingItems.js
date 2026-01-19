@@ -25,7 +25,7 @@ const createItem = (req, res) => {
 
 const getItems = (req, res) => {
   ClothingItem.find({})
-    .then((items) => res.status(200).send(items))
+    .then((items) => res.send(items))
     .catch((err) => {
       if (err.name === "DocumentNotFoundError") {
         res.status(NOT_FOUND_ERROR_CODE).send({ message: "Item not found" });
@@ -56,10 +56,9 @@ const deleteItem = (req, res) => {
           .status(FORBIDDEN_ERROR_CODE)
           .send({ message: "Access denied" });
       }
-      return ClothingItem.findByIdAndDelete(id);
-    })
-    .then(() => {
-      res.status(200).send({ message: "Item deleted successfully" });
+      return ClothingItem.findByIdAndDelete(id).then(() => {
+        res.status(200).send({ message: "Item deleted successfully" });
+      });
     })
 
     .catch((err) => {

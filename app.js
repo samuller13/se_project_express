@@ -15,9 +15,6 @@ mongoose.connect("mongodb://127.0.0.1:27017/wtwr_db").then(() => {
 app.use(cors());
 app.use(express.json());
 
-app.post("/signin", login);
-app.post("/signup", createUser);
-
 app.use("/", mainRouter);
 
 app.listen(PORT, () => {
