@@ -1,6 +1,6 @@
 # WTWR (What to Wear?): Back End
 
-The back-end project is focused on creating a server for the WTWR application. You’ll gain a deeper understanding of how to work with databases, set up security and testing, and deploy web applications on a remote machine. The eventual goal is to create a server with an API and user authorization.
+The back-end project is focused on creating a server for the WTWR application.
 
 ## Running the Project
 
@@ -16,6 +16,15 @@ CRUD- Create, REad, Update, Delete
 Error Handling
 User Authorization
 
-## Project Pitch Video
+## Project Pitch Videos
 
-Check out [this video](https://drive.google.com/file/d/1PKWliUi7dAJS69g47lMsjauhj9BMM3qm/view?usp=sharing), where I describe my project and some challenges I faced while building it.
+Check out these videos, where I describe my project and some challenges I faced while building it:
+
+- [Project 13 Pitch](https://drive.google.com/file/d/1PKWliUi7dAJS69g47lMsjauhj9BMM3qm/view?usp=sharing)
+- [Project 15 Pitch](https://www.loom.com/share/efe05e3e84054b118606ec7f3f0b45db)
+
+## Project Links
+
+Check out [my website](www.wtwr.lostgumball.com)!
+
+[Here](https://github.com/samuller13/se_project_react.git) is a link to my frontend GitHub repo, se_project_react
