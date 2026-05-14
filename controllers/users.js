@@ -32,11 +32,11 @@ const createUser = (req, res, next) => {
     })
     .catch((err) => {
       if (err.code === 11000) {
-        next(new ConflictError("Emal already exists"));
+        return next(new ConflictError("Email already exists"));
       } else if (err.name === "ValidationError") {
-        next(new BadRequestError("Invalid user data"));
+        return next(new BadRequestError("Invalid user data"));
       } else {
-        next(err);
+        return next(err);
       }
     });
 };
@@ -71,7 +71,7 @@ const login = (req, res, next) => {
     })
     .catch((err) => {
       if (err.message === "Incorrect email or password") {
-        next(new UnauthorizedError("Incorrect email or password"));
+        return next(new UnauthorizedError("Incorrect email or password"));
       } else {
         next(err);
       }
